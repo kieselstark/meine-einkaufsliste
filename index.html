@@ -1,1 +1,530 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Einkaufsliste</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4F46E5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Einkaufsliste">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWVpbmUgRWlua2F1ZnNsaXN0ZSIsInNob3J0X25hbWUiOiJFaW5rYXVmIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiM0RjQ2RTUiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTWpRaUlHaGxhV2RvZEQwaU1qUWlJSFpwWlhkQ2IzZzlJakFnTUNBeU5DQXlOQ0lnWm1sc2JEMGlJelEwTkRRME5DSStQSEJoZEdnaVpEMGlUVEV5TGprZ01UY3VNVzB0T0M0MklERXlMamRoTlNBMUlEQWdNVEFnTjJWeE1UTTNJREUyTGpOaU1TNDJMUzQ1SURNdU9TMHlMalpoTVM0MklERXVOaUF3SURBZ01TSXpNeUF4TnkxekxqQTNMUzQwTGpRdE1TNDBJREkzTGpJZ01UY3VOekkuTWpOaU1TNHpJREl1TlMweE1qQWdNVGMxTG1WdE1ESXVNMkV4TGpRZ01TNDBJREFnTVRZdE5qTTJJREl1TW1GMExqUWdOQzQwSURBZ01Ua2dPUzQyTFRVeUxqRjJRMk5rT1RzOEwzQmhkR2crUEM5emRtYysiLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1f2937;
+            touch-action: manipulation;
+        }
+
+        .app-container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background: rgba(79, 70, 229, 0.1);
+            margin: 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4F46E5;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .input-section {
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #10B981, #059669);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .add-btn:active {
+            transform: translateY(0);
+        }
+
+        .list-container {
+            padding: 0 20px 20px;
+            max-height: calc(100vh - 280px);
+            overflow-y: auto;
+        }
+
+        .list-item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .list-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .list-item.completed {
+            opacity: 0.7;
+            background: #f9fafb;
+            border-left-color: #10B981;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .checkbox.checked {
+            background: #10B981;
+            border-color: #10B981;
+        }
+
+        .checkbox.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .item-text.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .delete-btn {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .clear-completed {
+            background: #F59E0B;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: calc(100% - 40px);
+        }
+
+        .clear-completed:hover {
+            background: #D97706;
+            transform: translateY(-1px);
+        }
+
+        .pwa-install {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .pwa-install:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                max-width: 100%;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .input-section {
+                padding: 15px;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .list-item {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .add-btn:active {
+            animation: bounce 0.6s;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🛒 Meine Einkaufsliste</h1>
+            <p>Vergiss nie wieder etwas!</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="totalItems">0</div>
+                <div class="stat-label">Gesamt</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="openItems">0</div>
+                <div class="stat-label">Offen</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="completedItems">0</div>
+                <div class="stat-label">Erledigt</div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="input-container">
+                <input type="text" id="itemInput" class="input-field" placeholder="Was brauchst du? (z.B. Milch, Brot...)" autocomplete="off">
+                <button id="addBtn" class="add-btn">+</button>
+            </div>
+        </div>
+
+        <div class="list-container" id="listContainer">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🛒</div>
+                <h3>Deine Liste ist leer</h3>
+                <p>Füge dein erstes Element hinzu!</p>
+            </div>
+        </div>
+
+        <button class="clear-completed" id="clearCompleted" style="display: none;">
+            ✅ Erledigte Artikel löschen
+        </button>
+
+        <button class="pwa-install" id="installBtn" title="App installieren">
+            📱
+        </button>
+    </div>
+
+    <script>
+        class ShoppingList {
+            constructor() {
+                this.items = this.loadFromStorage();
+                this.initializeElements();
+                this.bindEvents();
+                this.render();
+                this.setupPWA();
+            }
+
+            initializeElements() {
+                this.itemInput = document.getElementById('itemInput');
+                this.addBtn = document.getElementById('addBtn');
+                this.listContainer = document.getElementById('listContainer');
+                this.emptyState = document.getElementById('emptyState');
+                this.clearCompleted = document.getElementById('clearCompleted');
+                this.totalItems = document.getElementById('totalItems');
+                this.openItems = document.getElementById('openItems');
+                this.completedItems = document.getElementById('completedItems');
+            }
+
+            bindEvents() {
+                this.addBtn.addEventListener('click', () => this.addItem());
+                this.itemInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.addItem();
+                });
+                this.clearCompleted.addEventListener('click', () => this.clearCompletedItems());
+            }
+
+            addItem() {
+                const text = this.itemInput.value.trim();
+                if (!text) return;
+
+                const item = {
+                    id: Date.now(),
+                    text: text,
+                    completed: false,
+                    timestamp: new Date().toLocaleString('de-DE')
+                };
+
+                this.items.unshift(item);
+                this.itemInput.value = '';
+                this.saveToStorage();
+                this.render();
+
+                // Kleine Animation für Feedback
+                this.addBtn.style.background = '#10B981';
+                setTimeout(() => {
+                    this.addBtn.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+                }, 200);
+            }
+
+            toggleItem(id) {
+                const item = this.items.find(item => item.id === id);
+                if (item) {
+                    item.completed = !item.completed;
+                    this.saveToStorage();
+                    this.render();
+                }
+            }
+
+            deleteItem(id) {
+                this.items = this.items.filter(item => item.id !== id);
+                this.saveToStorage();
+                this.render();
+            }
+
+            clearCompletedItems() {
+                this.items = this.items.filter(item => !item.completed);
+                this.saveToStorage();
+                this.render();
+            }
+
+            render() {
+                this.updateStats();
+                
+                if (this.items.length === 0) {
+                    this.emptyState.style.display = 'block';
+                    this.clearCompleted.style.display = 'none';
+                    return;
+                }
+
+                this.emptyState.style.display = 'none';
+                
+                const completedCount = this.items.filter(item => item.completed).length;
+                this.clearCompleted.style.display = completedCount > 0 ? 'block' : 'none';
+
+                const itemsHTML = this.items.map(item => `
+                    <div class="list-item ${item.completed ? 'completed' : ''}" data-id="${item.id}">
+                        <div class="checkbox ${item.completed ? 'checked' : ''}" onclick="app.toggleItem(${item.id})"></div>
+                        <div class="item-text ${item.completed ? 'completed' : ''}">${item.text}</div>
+                        <button class="delete-btn" onclick="app.deleteItem(${item.id})">🗑️</button>
+                    </div>
+                `).join('');
+
+                this.listContainer.innerHTML = itemsHTML;
+            }
+
+            updateStats() {
+                const total = this.items.length;
+                const completed = this.items.filter(item => item.completed).length;
+                const open = total - completed;
+
+                this.totalItems.textContent = total;
+                this.openItems.textContent = open;
+                this.completedItems.textContent = completed;
+            }
+
+            saveToStorage() {
+                try {
+                    localStorage.setItem('shoppingList', JSON.stringify(this.items));
+                } catch (e) {
+                    console.log('Storage not available');
+                }
+            }
+
+            loadFromStorage() {
+                try {
+                    const stored = localStorage.getItem('shoppingList');
+                    return stored ? JSON.parse(stored) : [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            setupPWA() {
+                // PWA Installation
+                let deferredPrompt;
+                const installBtn = document.getElementById('installBtn');
+
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installBtn.style.display = 'block';
+                });
+
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        deferredPrompt = null;
+                        installBtn.style.display = 'none';
+                    }
+                });
+
+                // Service Worker (einfache Version)
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHt9KTs=');
+                }
+            }
+        }
+
+        // App initialisieren
+        const app = new ShoppingList();
+
+        // Zusätzliche Touch-Optimierungen
+        document.addEventListener('touchstart', function() {}, true);
+        
+        // Prevent zoom on input focus (iOS)
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        let lastTouchEnd = 0;
+    </script>
+</body>
+</html>

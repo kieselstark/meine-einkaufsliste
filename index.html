@@ -5,14 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meine Einkaufsliste</title>
     
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/x-icon" href="https://kieselstark.github.io/meine-einkaufsliste/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://kieselstark.github.io/meine-einkaufsliste/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://kieselstark.github.io/meine-einkaufsliste/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://kieselstark.github.io/meine-einkaufsliste/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://kieselstark.github.io/meine-einkaufsliste/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://kieselstark.github.io/meine-einkaufsliste/android-chrome-512x512.png">
+    
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#4F46E5">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Einkaufsliste">
+    <meta name="msapplication-TileColor" content="#4F46E5">
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTWVpbmUgRWlua2F1ZnNsaXN0ZSIsInNob3J0X25hbWUiOiJFaW5rYXVmIiwic3RhcnRfdXJsIjoiLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmZmZmZmYiLCJ0aGVtZV9jb2xvciI6IiM0RjQ2RTUiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTWpRaUlHaGxhV2RvZEQwaU1qUWlJSFpwWlhkQ2IzZzlJakFnTUNBeU5DQXlOQ0lnWm1sc2JEMGlJelEwTkRRME5DSStQSEJoZEdnaVpEMGlUVEV5TGprZ01UY3VNVzB0T0M0MklERXlMamRoTlNBMUlEQWdNVEFnTjJWeE1UTTNJREUyTGpOaU1TNDJMUzQ1SURNdU9TMHlMalpoTVM0MklERXVOaUF3SURBZ01TSXpNeUF4TnkxekxqQTNMUzQwTGpRdE1TNDBJREkzTGpJZ01UY3VOekkuTWpOaU1TNHpJREl1TlMweE1qQWdNVGMxTG1WdE1ESXVNMkV4TGpRZ01TNDBJREFnTVRZdE5qTTJJREl1TW1GMExqUWdOQzQwSURBZ01Ua2dPUzQyTFRVeUxqRjJRMk5rT1RzOEwzQmhkR2crUEM5emRtYysiLCJzaXplcyI6IjE5MngxOTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCJ9XX0=">
+    <script>
+        // Dynamisches Manifest erstellen
+        const manifest = {
+            "name": "Meine Einkaufsliste",
+            "short_name": "Einkauf",
+            "description": "Praktische Einkaufsliste - Vergiss nie wieder etwas!",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#ffffff",
+            "theme_color": "#4F46E5",
+            "orientation": "portrait",
+            "scope": "/",
+            "icons": [
+                {
+                    "src": "https://kieselstark.github.io/meine-einkaufsliste/android-chrome-192x192.png",
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "maskable any"
+                },
+                {
+                    "src": "https://kieselstark.github.io/meine-einkaufsliste/android-chrome-512x512.png",
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "maskable any"
+                },
+                {
+                    "src": "https://kieselstark.github.io/meine-einkaufsliste/apple-touch-icon.png",
+                    "sizes": "180x180",
+                    "type": "image/png"
+                }
+            ],
+            "categories": ["productivity", "utilities"],
+            "lang": "de",
+            "dir": "ltr"
+        };
+        
+        const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        document.write('<link rel="manifest" href="' + manifestURL + '">');
+    </script>
     
     <style>
         * {
@@ -251,17 +299,53 @@
             background: #4F46E5;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 15px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 20px;
             box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
             transition: all 0.3s ease;
             display: none;
+            z-index: 1000;
         }
 
         .pwa-install:hover {
             transform: scale(1.1);
+        }
+
+        .install-banner {
+            background: linear-gradient(135deg, #4F46E5, #7C3AED);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            display: none;
+            position: relative;
+        }
+
+        .install-banner button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .install-banner button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .close-banner {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
         }
 
         @media (max-width: 480px) {
@@ -309,9 +393,33 @@
         .add-btn:active {
             animation: bounce 0.6s;
         }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(79, 70, 229, 0.6);
+            }
+            100% {
+                box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+            }
+        }
+
+        .pwa-install.show {
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
 <body>
+    <div class="install-banner" id="installBanner">
+        <button class="close-banner" onclick="closeBanner()">×</button>
+        <div>📱 <strong>App installieren</strong></div>
+        <div style="font-size: 0.9rem; margin: 5px 0;">Füge diese App zu deinem Homescreen hinzu für schnellen Zugriff!</div>
+        <button onclick="installApp()">Installieren</button>
+        <button onclick="closeBanner()">Später</button>
+    </div>
+
     <div class="app-container">
         <div class="header">
             <h1>🛒 Meine Einkaufsliste</h1>
@@ -467,7 +575,10 @@
 
             saveToStorage() {
                 try {
-                    localStorage.setItem('shoppingList', JSON.stringify(this.items));
+                    const data = JSON.stringify(this.items);
+                    if (typeof Storage !== 'undefined') {
+                        localStorage.setItem('shoppingList', data);
+                    }
                 } catch (e) {
                     console.log('Storage not available');
                 }
@@ -475,37 +586,121 @@
 
             loadFromStorage() {
                 try {
-                    const stored = localStorage.getItem('shoppingList');
-                    return stored ? JSON.parse(stored) : [];
+                    if (typeof Storage !== 'undefined') {
+                        const stored = localStorage.getItem('shoppingList');
+                        return stored ? JSON.parse(stored) : [];
+                    }
+                    return [];
                 } catch (e) {
                     return [];
                 }
             }
 
             setupPWA() {
-                // PWA Installation
                 let deferredPrompt;
                 const installBtn = document.getElementById('installBtn');
+                const installBanner = document.getElementById('installBanner');
 
+                // PWA Installation Event
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     deferredPrompt = e;
+                    
+                    // Zeige Install-Button und Banner
                     installBtn.style.display = 'block';
+                    installBtn.classList.add('show');
+                    
+                    // Zeige Banner nach 3 Sekunden
+                    setTimeout(() => {
+                        if (!localStorage.getItem('installBannerDismissed')) {
+                            installBanner.style.display = 'block';
+                        }
+                    }, 3000);
                 });
 
-                installBtn.addEventListener('click', async () => {
-                    if (deferredPrompt) {
-                        deferredPrompt.prompt();
-                        const { outcome } = await deferredPrompt.userChoice;
-                        deferredPrompt = null;
-                        installBtn.style.display = 'none';
-                    }
+                // Install Button Click
+                installBtn.addEventListener('click', () => {
+                    this.triggerInstall(deferredPrompt);
                 });
 
-                // Service Worker (einfache Version)
+                // Global Install Function
+                window.installApp = () => {
+                    this.triggerInstall(deferredPrompt);
+                };
+
+                // Close Banner Function
+                window.closeBanner = () => {
+                    installBanner.style.display = 'none';
+                    localStorage.setItem('installBannerDismissed', 'true');
+                };
+
+                // App wurde installiert
+                window.addEventListener('appinstalled', () => {
+                    installBtn.style.display = 'none';
+                    installBanner.style.display = 'none';
+                    console.log('PWA wurde erfolgreich installiert!');
+                });
+
+                // Service Worker registrieren
                 if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHt9KTs=');
+                    this.registerServiceWorker();
                 }
+            }
+
+            async triggerInstall(deferredPrompt) {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    
+                    if (outcome === 'accepted') {
+                        console.log('Benutzer hat die Installation akzeptiert');
+                    } else {
+                        console.log('Benutzer hat die Installation abgelehnt');
+                    }
+                    
+                    deferredPrompt = null;
+                    document.getElementById('installBtn').style.display = 'none';
+                    document.getElementById('installBanner').style.display = 'none';
+                }
+            }
+
+            registerServiceWorker() {
+                // Einfacher Service Worker für Offline-Funktionalität
+                const swCode = `
+                    const CACHE_NAME = 'einkaufsliste-v1';
+                    const urlsToCache = [
+                        '/',
+                        'https://kieselstark.github.io/meine-einkaufsliste/android-chrome-192x192.png',
+                        'https://kieselstark.github.io/meine-einkaufsliste/android-chrome-512x512.png'
+                    ];
+
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => {
+                                    return response || fetch(event.request);
+                                })
+                        );
+                    });
+                `;
+
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+
+                navigator.serviceWorker.register(swUrl)
+                    .then(registration => {
+                        console.log('Service Worker registriert:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker Registrierung fehlgeschlagen:', error);
+                    });
             }
         }
 
@@ -525,6 +720,12 @@
         }, false);
         
         let lastTouchEnd = 0;
+
+        // PWA Status prüfen
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('App läuft im Standalone-Modus (installiert)');
+            document.body.classList.add('pwa-mode');
+        }
     </script>
 </body>
 </html>
